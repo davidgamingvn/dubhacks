@@ -10,6 +10,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@auth0/nextjs-auth0": "^3.5.0",
     "@t3-oss/env-nextjs": "^0.10.1",
     "frontend": "file:",
     "geist": "^1.3.0",
