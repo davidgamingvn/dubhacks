@@ -145,11 +145,14 @@
   text-transform: capitalize !important;
 }
 
-#picture {
+/* #picture {
   background-color: #1e1e1e !important;
   opacity: 90%;
   cursor: pointer;
 }
+#picture input {
+  color: white !important;
+} */
 
 #file-upload-button {
   cursor: pointer;
