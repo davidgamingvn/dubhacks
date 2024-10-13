@@ -17,6 +17,7 @@ const embeddings = new CustomEmbeddings();
 
 router.post('/uploadhomework/:userId', upload.single('pdf'), async (req: MulterRequest, res: Response) => {
   const { userId } = req.params;
+  const { deadline } = req.body;
   
   try {
     if (!req.file) {
@@ -38,7 +39,8 @@ router.post('/uploadhomework/:userId', upload.single('pdf'), async (req: MulterR
       title: req.file.originalname,
       text,
       embedding,
-      userId
+      userId,
+      deadline
     });
 
     // Clean up the uploaded file
