@@ -1,19 +1,8 @@
-"use client";
-
-import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Card, CardContent, CardHeader } from "~/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu";
-import { Button } from "~/components/ui/button";
-import { Moon, Sun, LogOut, User } from "lucide-react";
-import { useTheme } from "next-themes";
+import Navbar from "~/components/NavBar";
+import { getSession } from "@auth0/nextjs-auth0";
 
-export default function HomeworkScheduler() {
+export default async function HomeworkScheduler() {
   const days = [
     "Sunday",
     "Monday",
@@ -23,81 +12,68 @@ export default function HomeworkScheduler() {
     "Friday",
     "Saturday",
   ];
-  const { theme, setTheme } = useTheme();
 
-  const isDarkTheme = theme === "dark";
+  const session = await getSession();
+  const user = session?.user;
+
+  const constraints = [
+    {
+      name: "sleep",
+      days: [0, 1, 2, 3, 4, 5, 6], // Days 0-6 represent Sunday to Saturday (entire week)
+      from: "22:00",
+      to: "06:00",
+    },
+    {
+      name: "workout",
+      days: [1, 3, 5], // Days 1, 3, 5 represent Monday, Wednesday, Friday
+      from: "07:00",
+      to: "08:00",
+    },
+    {
+      name: "study",
+      days: [2, 4], // Days 2, 4 represent Tuesday and Thursday
+      from: "16:00",
+      to: "18:00",
+    },
+  ];
+
+  const mockSchedule = days.map((day, index) => {
+    const dayConstraints = constraints
+      .filter((constraint) => constraint.days.includes(index))
+      .map((constraint) => ({
+        name: constraint.name,
+        from: constraint.from,
+        to: constraint.to,
+      }));
+    return { day, constraints: dayConstraints };
+  });
 
   return (
-    <div className="min-h-screen bg-[#FFFBEB]">
-      <nav className="bg-white dark:bg-gray-800 shadow-md">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex h-16 justify-between">
-            <div className="flex flex-shrink-0 items-center">
-              <div className="text-4xl font-bold">Scheduler</div>
-            </div>
-            <div className="flex items-center">
-              <div className="flex items-center">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      className="relative h-8 w-8 rounded-full"
-                    >
-                      <Avatar className="h-8 w-8">
-                        <AvatarImage
-                          src="/placeholder-avatar.jpg"
-                          alt="@user"
-                        />
-                        <AvatarFallback>U</AvatarFallback>
-                      </Avatar>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem>
-                      <User className="mr-2 h-4 w-4" />
-                      <span>Profile</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onClick={() => setTheme(isDarkTheme ? "light" : "dark")}
-                    >
-                      {isDarkTheme ? (
-                        <Sun className="mr-2 h-4 w-4" />
-                      ) : (
-                        <Moon className="mr-2 h-4 w-4" />
-                      )}
-                      <span>{isDarkTheme ? "Light" : "Dark"}</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem className="border-none focus:bg-red-400">
-                      <LogOut className="mr-2 h-4 w-4" />
-                      <span>Log out</span>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            </div>
-          </div>
-        </div>
-      </nav>
+    <div className="min-h-screen bg-[#FFFBEB] dark:bg-slate-700">
+      <Navbar />
 
       <main className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
-        <Card className="bg-white dark:bg-gray-800">
-          <CardHeader className="bg-[#FAF17C] p-4 text-xl font-bold text-black rounded-t-xl">
-            Hello User! Here is your homework schedule this week:
+        <Card className="border-none bg-white dark:bg-gray-800">
+          <CardHeader className="rounded-t-xl bg-[#FAF17C] p-4 text-2xl font-bold tracking-wider dark:text-slate-800">
+            Hello {user?.name ?? "User"}! Here is your homework schedule this
+            week:
           </CardHeader>
           <CardContent>
             <div className="mt-4 grid grid-cols-7 gap-4">
-              {days.map((day) => (
+              {mockSchedule.map(({ day, constraints }) => (
                 <div key={day} className="text-center font-semibold">
-                  {day}
-                </div>
-              ))}
-              {days.map((day) => (
-                <div
-                  key={`${day}-schedule`}
-                  className="h-40 rounded-md border border-gray-200 p-2"
-                >
-                  {/* Add homework items here */}
+                  <div>{day}</div>
+                  {constraints.map((constraint, idx) => (
+                    <div
+                      key={idx}
+                      className="mt-2 rounded-md border border-gray-200 p-2"
+                    >
+                      <div className="font-bold">{constraint.name}</div>
+                      <div>
+                        {constraint.from} - {constraint.to}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               ))}
             </div>
