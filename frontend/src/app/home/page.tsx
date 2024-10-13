@@ -109,13 +109,13 @@ export default function HomeworkScheduler() {
             </DialogHeader>
             <form onSubmit={handleSubmit}>
               <div className="grid w-full max-w-sm items-center gap-1.5">
-                <Label htmlFor="file" className="text-[#1E1E1E]">
+                <Label htmlFor="picture" className="text-[#1E1E1E]">
                   File
                 </Label>
                 <Input
-                  id="file"
+                  id="picture"
                   type="file"
-                  className="cursor-pointer bg-white text-[#1E1E1E] dark:bg-gray-800 dark:text-white"
+                  className="text-[#1E1E1E]"
                   onChange={handleFileChange}
                   required
                 />
