@@ -6,6 +6,7 @@ import interactionPlugin from "@fullcalendar/interaction"; // needed for user in
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid"; // for week and day views
 import moment from "moment";
+import { getRandomColor } from "~/lib/utils";
 import { useEffect, useState } from "react";
 import {
   Dialog,
@@ -75,9 +76,14 @@ export default function WeeklyCalendar() {
       );
 
       const data = (await response.json()) as UserData;
-      console.log(data);
 
-      setConstraints(data.constraints);
+      // Assign a random color to each constraint if it doesn't have one
+      const updatedConstraints = data.constraints.map((constraint) => ({
+        ...constraint,
+        color: constraint.color ?? getRandomColor(),
+      }));
+
+      setConstraints(updatedConstraints);
     }
     getProfile().catch((error) => {
       console.error("Failed to fetch profile:", error);
