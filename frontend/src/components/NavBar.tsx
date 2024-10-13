@@ -26,7 +26,7 @@ export default function Navbar() {
         <div className="flex h-16 justify-between">
           <div className="flex flex-shrink-0 items-center">
             <div className="text-4xl font-bold">
-              <Link href="/">Scheduler</Link>
+              <Link href="/home">Scheduler</Link>
             </div>
           </div>
           <div className="flex items-center">

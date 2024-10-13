@@ -1,16 +1,17 @@
+import { getSession } from "@auth0/nextjs-auth0";
+import { type UserProfile } from "@auth0/nextjs-auth0/client";
+import { Suspense } from "react";
+import Navbar from "~/components/NavBar";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Progress } from "~/components/ui/progress";
-import { getSession } from "@auth0/nextjs-auth0";
 import { Spinner } from "~/components/ui/spinner";
-import Navbar from "~/components/NavBar";
 
 export default async function UserProfile() {
   const session = await getSession();
-  const user: { name?: string; email?: string; picture?: string } =
-    session?.user ?? {};
+  const user: UserProfile | undefined = session?.user;
   const userData = {
-    name: user?.name,
+    name: user?.nickname,
     email: user?.email,
     avatar: user?.picture,
     subjectRatings: {
@@ -30,13 +31,18 @@ export default async function UserProfile() {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <Navbar />
+      <Suspense fallback={<Spinner />}>
+        <Navbar />
+      </Suspense>
       <div className="px-4 py-12 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl">
           <Card className="overflow-hidden rounded-lg bg-white shadow-xl">
             <CardHeader className="bg-[#FAF17C] py-8 text-center">
               <Avatar className="mx-auto mb-4 h-32 w-32 border-4 border-white shadow-lg">
-                <AvatarImage src={userData.avatar} alt={userData.name} />
+                <AvatarImage
+                  src={userData.avatar ?? undefined}
+                  alt={userData.name ?? undefined}
+                />
                 <AvatarFallback>
                   <div className="flex flex-col items-center">
                     <Spinner size="large" />

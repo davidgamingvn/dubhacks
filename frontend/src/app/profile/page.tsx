@@ -1,10 +1,10 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import { Afacad } from "next/font/google";
-import ConfidenceSlider from "./ConfidenceSlider";
 import { useUser } from "@auth0/nextjs-auth0/client";
+import { Afacad } from "next/font/google";
 import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 import { useToast } from "~/hooks/use-toast";
+import ConfidenceSlider from "./ConfidenceSlider";
 
 export const afacad = Afacad({
   subsets: ["latin"],
@@ -72,16 +72,17 @@ export default function ProfileCreator() {
           title: "Profile Exists",
           description:
             "Your profile is already created. Redirecting to homepage",
-          duration: 1000,
+          duration: 3000,
         });
         router.push("/home");
       }
 
       if (response.status === 404) {
         toast({
+          variant: "destructive",
           title: "Profile Not Found",
           description: "Please create your profile",
-          duration: 1000,
+          duration: 3000,
         });
       }
     };
