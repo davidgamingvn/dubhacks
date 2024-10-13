@@ -22,19 +22,19 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${afacad.className}`}>
-      <ThemeProvider
-        attribute="class"
-        defaultTheme="system"
-        enableSystem
-        disableTransitionOnChange
-      >
-        <UserProvider>
-          <ThemeProvider>
-            <body>{children}</body>
+      <UserProvider>
+        <body>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
             <Toaster />
           </ThemeProvider>
-        </UserProvider>
-      </ThemeProvider>
+        </body>
+      </UserProvider>
     </html>
   );
 }

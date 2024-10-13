@@ -73,7 +73,9 @@ export default function HomeworkScheduler() {
 
   return (
     <div className="min-h-screen bg-[#FFFBEB] dark:bg-slate-700">
-      <Navbar />
+      <Suspense fallback={<Spinner />}>
+        <Navbar />
+      </Suspense>
       <main className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
         <Card className="border-none bg-white dark:bg-gray-800">
           <CardHeader className="rounded-t-xl bg-[#FAF17C] p-4 text-2xl font-bold tracking-wider dark:text-slate-800">
@@ -95,9 +97,11 @@ export default function HomeworkScheduler() {
               <Plus className="h-6 w-6" />
             </Button>
           </DialogTrigger>
-          <DialogContent className="border-none bg-[#FAF17C]/80 sm:max-w-[425px]">
+          <DialogContent className="border-none bg-[#FFFFFA] sm:max-w-[425px]">
             <DialogHeader>
-              <DialogTitle className="text-4xl">Add your homework</DialogTitle>
+              <DialogTitle className="text-4xl text-[#1E1E1E]">
+                Add your homework
+              </DialogTitle>
               <DialogDescription>
                 Add your latest homework and its deadline, and we&apos;ll make
                 your schedule!!!
@@ -105,16 +109,20 @@ export default function HomeworkScheduler() {
             </DialogHeader>
             <form onSubmit={handleSubmit}>
               <div className="grid w-full max-w-sm items-center gap-1.5">
-                <Label htmlFor="picture">File</Label>
+                <Label htmlFor="file" className="text-[#1E1E1E]">
+                  File
+                </Label>
                 <Input
-                  id="picture"
+                  id="file"
                   type="file"
-                  className="bg-white"
+                  className="cursor-pointer bg-white text-[#1E1E1E] dark:bg-gray-800 dark:text-white"
                   onChange={handleFileChange}
                   required
                 />
                 <Separator orientation="horizontal" className="mb-4 mt-4" />
-                <Label htmlFor="date">Deadline</Label>
+                <Label htmlFor="date" className="text-[#1E1E1E]">
+                  Deadline
+                </Label>
                 <DatePicker
                   selected={date}
                   onSelect={(date) => setDate(date ?? null)}

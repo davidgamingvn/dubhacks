@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Progress } from "~/components/ui/progress";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { Spinner } from "~/components/ui/spinner";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Navbar from "~/components/NavBar";
 
 type UserData = {
@@ -42,12 +42,12 @@ export default function UserProfile() {
   const userId = user?.sub ? user.sub.split("|")[1] : null;
   console.log(userId);
 
-  if (!userId) {
-    console.error("User ID is not available");
-    return;
-  }
-
   useEffect(() => {
+    if (!userId) {
+      console.error("User ID is not available");
+      return;
+    }
+
     async function getProfile() {
       const response = await fetch(
         `http://localhost:4000/api/profile/${userId}`,
@@ -56,12 +56,14 @@ export default function UserProfile() {
         },
       );
 
-      const data = await response.json();
+      const data: UserData = (await response.json()) as UserData;
 
       setUserData(data);
       console.log(userData.subjectRatings);
     }
-    getProfile();
+    getProfile().catch((error) => {
+      console.error("Failed to fetch profile:", error);
+    });
   }, []);
 
   const capitalizeFirstLetter = (string: string) => {
@@ -70,13 +72,18 @@ export default function UserProfile() {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <Navbar />
+      <Suspense fallback={<Spinner />}>
+        <Navbar />
+      </Suspense>
       <div className="px-4 py-12 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl">
           <Card className="overflow-hidden rounded-lg bg-white shadow-xl">
             <CardHeader className="bg-[#FAF17C] py-8 text-center">
               <Avatar className="mx-auto mb-4 h-32 w-32 border-4 border-white shadow-lg">
-                <AvatarImage src={userData.avatar} alt={userData.name} />
+                <AvatarImage
+                  src={userData.avatar ?? undefined}
+                  alt={userData.name ?? undefined}
+                />
                 <AvatarFallback>
                   <div className="flex flex-col items-center">
                     <Spinner size="large" />
