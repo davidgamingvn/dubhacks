@@ -2,6 +2,7 @@
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { Afacad } from "next/font/google";
 import { useRouter } from "next/navigation";
+import { Coffee } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useToast } from "~/hooks/use-toast";
 import ConfidenceSlider from "./ConfidenceSlider";
@@ -199,41 +200,15 @@ export default function ProfileCreator() {
             <hr></hr>
             <form className="mt-7 flex h-[70%] w-full flex-col gap-10 overflow-y-scroll pr-6">
               <div className="flex w-full flex-col gap-9">
-                <ConfidenceSlider
-                  subject="math"
-                  value={confidences.math}
-                  change_handler={handleSliderChange}
-                />
-                <ConfidenceSlider
-                  subject="science"
-                  value={confidences.science}
-                  change_handler={handleSliderChange}
-                />
-                <ConfidenceSlider
-                  subject="history"
-                  value={confidences.history}
-                  change_handler={handleSliderChange}
-                />
-                <ConfidenceSlider
-                  subject="english"
-                  value={confidences.english}
-                  change_handler={handleSliderChange}
-                />
-                <ConfidenceSlider
-                  subject="art"
-                  value={confidences.art}
-                  change_handler={handleSliderChange}
-                />
-                <ConfidenceSlider
-                  subject="Physical Education"
-                  value={confidences.physicalEducation}
-                  change_handler={handleSliderChange}
-                />
-                <ConfidenceSlider
-                  subject="music"
-                  value={confidences.music}
-                  change_handler={handleSliderChange}
-                />
+                {Object.keys(confidences).map((el: string) => {
+                  return (
+                    <ConfidenceSlider
+                      subject={el}
+                      value={confidences[el]}
+                      change_handler={handleSliderChange}
+                    />
+                  );
+                })}
               </div>
             </form>
           </section>
