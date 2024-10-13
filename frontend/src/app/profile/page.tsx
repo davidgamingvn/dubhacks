@@ -1,17 +1,9 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import { Afacad } from "next/font/google";
-import ConfidenceSlider from "./ConfidenceSlider";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { useRouter } from "next/navigation";
-import { Coffee } from "lucide-react";
+import React, { useEffect, useState } from "react";
 import { useToast } from "~/hooks/use-toast";
-
-export const afacad = Afacad({
-  subsets: ["latin"],
-  weight: ["400", "500"],
-  display: "swap",
-});
+import ConfidenceSlider from "./ConfidenceSlider";
 
 type Subject =
   | "math"
@@ -34,7 +26,6 @@ interface Confidences {
 
 export default function ProfileCreator() {
   const [name, setName] = useState("");
-  const [profile, setProfile] = useState(null);
   const [miscText, setMiscText] = useState("");
   const { toast } = useToast();
   const { user } = useUser();
@@ -73,16 +64,17 @@ export default function ProfileCreator() {
           title: "Profile Exists",
           description:
             "Your profile is already created. Redirecting to homepage",
-          duration: 1000,
+          duration: 3000,
         });
         router.push("/home");
       }
 
       if (response.status === 404) {
         toast({
+          variant: "destructive",
           title: "Profile Not Found",
           description: "Please create your profile",
-          duration: 1000,
+          duration: 3000,
         });
       }
     };
@@ -202,8 +194,9 @@ export default function ProfileCreator() {
                 {Object.keys(confidences).map((el: string) => {
                   return (
                     <ConfidenceSlider
+                      key={el}
                       subject={el}
-                      value={confidences[el]}
+                      value={confidences[el as Subject]}
                       change_handler={handleSliderChange}
                     />
                   );

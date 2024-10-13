@@ -73,7 +73,9 @@ export default function HomeworkScheduler() {
 
   return (
     <div className="min-h-screen bg-[#FFFBEB] dark:bg-slate-700">
-      <Navbar />
+      <Suspense fallback={<Spinner />}>
+        <Navbar />
+      </Suspense>
       <main className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
         <Card className="border-none bg-white dark:bg-gray-800">
           <CardHeader className="rounded-t-xl bg-[#FAF17C] p-4 text-2xl font-bold tracking-wider dark:text-slate-800">
