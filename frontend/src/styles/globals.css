@@ -139,10 +139,12 @@
 
 .fc-button-primary {
   text-transform: capitalize !important;
+  background-color: hsl(220, 40%, 60%) !important;
 }
 
 .fc-event {
   text-transform: capitalize !important;
+  background-color: hsl(120, 40%, 60%) !important;
 }
 
 /* #picture {

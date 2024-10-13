@@ -77,10 +77,15 @@ export default function HomeworkScheduler() {
         <Navbar />
       </Suspense>
       <main className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
-        <Card className="border-none bg-white dark:bg-gray-800">
-          <CardHeader className="rounded-t-xl bg-[#FAF17C] p-4 text-2xl font-bold tracking-wider dark:text-slate-800">
-            Hello {user?.name ?? "User"}! Here is your homework schedule this
-            week:
+        <Card className="border border-[#1E1E1E] bg-white dark:bg-gray-800">
+          <CardHeader className="rounded-t-xl border-b border-[#1E1E1E] bg-[#FAF17C] px-6 py-4 text-2xl font-normal tracking-wider dark:text-slate-800">
+            <p>
+              Hello{" "}
+              <span className="inline font-semibold">
+                {user?.name ?? "User"}
+              </span>
+              ! Here is your homework schedule this week:
+            </p>
           </CardHeader>
           <CardContent>
             <Suspense fallback={<Spinner />}>
@@ -90,11 +95,11 @@ export default function HomeworkScheduler() {
         </Card>
       </main>
 
-      <div className="fixed bottom-4 right-4">
+      <div className="fixed bottom-6 right-6">
         <Dialog>
           <DialogTrigger>
-            <Button className="h-14 w-14 rounded-full bg-[#FAF17C] hover:bg-[#E6D85F] dark:bg-yellow-600 dark:hover:bg-yellow-700">
-              <Plus className="h-6 w-6" />
+            <Button className="z-index: 9999; size-24 rounded-full bg-[#1E1E1E] hover:bg-[#E6D85F] hover:text-white dark:bg-[#FAF17C] hover:dark:bg-[#1E1E1E]">
+              <Plus className="z-index: 9999; h-12 w-12" />
             </Button>
           </DialogTrigger>
           <DialogContent className="border-none bg-[#FFFFFA] sm:max-w-[425px]">

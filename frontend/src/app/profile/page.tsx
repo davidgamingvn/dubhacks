@@ -136,7 +136,7 @@ export default function ProfileCreator() {
   return (
     <main className="flex h-[100vh] w-[100vw] items-center justify-center overflow-hidden bg-[#FEFCE8]">
       <section className="flex size-10/12 flex-col rounded-xl border border-[#1E1E1E] bg-[#FFFFFA] tracking-wide text-[#1E1E1E]">
-        <section className="w-full rounded-tl-xl rounded-tr-xl border-b border-[#1E1E1E] bg-[#FAF17C] px-[2em] py-[1em]">
+        <section className="w-full flex-1 rounded-tl-xl rounded-tr-xl border-b border-[#1E1E1E] bg-[#FAF17C] px-[2em] py-[1em]">
           <h2 className="text-xl font-semibold opacity-60">Profile</h2>
           <h1 className="text-3xl font-semibold">
             Tell us a little about yourself
@@ -180,7 +180,7 @@ export default function ProfileCreator() {
                 ></textarea>
               </div>
               <div className="flex h-1/3 flex-col gap-2">
-                <button className="rounded-xl bg-[#1E1E1E] py-3 text-white hover:bg-[#575757]">
+                <button className="rounded-xl bg-[#1E1E1E] py-3 text-white transition-colors hover:bg-[#FAF17C] hover:text-[#1E1E1E]">
                   Create Profile
                 </button>
               </div>
