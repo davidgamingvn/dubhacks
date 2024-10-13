@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Progress } from "~/components/ui/progress";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { Spinner } from "~/components/ui/spinner";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Navbar from "~/components/NavBar";
 
 type UserData = {
@@ -42,12 +42,12 @@ export default function UserProfile() {
   const userId = user?.sub ? user.sub.split("|")[1] : null;
   console.log(userId);
 
-  if (!userId) {
-    console.error("User ID is not available");
-    return;
-  }
-
   useEffect(() => {
+    if (!userId) {
+      console.error("User ID is not available");
+      return;
+    }
+
     async function getProfile() {
       const response = await fetch(
         `http://localhost:4000/api/profile/${userId}`,
@@ -56,12 +56,14 @@ export default function UserProfile() {
         },
       );
 
-      const data = await response.json();
+      const data: UserData = (await response.json()) as UserData;
 
       setUserData(data);
       console.log(userData.subjectRatings);
     }
-    getProfile();
+    getProfile().catch((error) => {
+      console.error("Failed to fetch profile:", error);
+    });
   }, []);
 
   const capitalizeFirstLetter = (string: string) => {

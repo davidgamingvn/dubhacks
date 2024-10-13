@@ -1,7 +1,7 @@
 export default function ConfidenceSlider({ subject, value, change_handler }) {
   return (
     <div className="flex w-full flex-col gap-2">
-      <div className="flex w-full justify-between">
+      <div className="flex w-full justify-between pl-4">
         <label className="capitalize">{subject}</label>
         <p>{value}%</p>
       </div>
