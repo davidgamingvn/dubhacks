@@ -27,6 +27,7 @@
     "typescript": "^5.6.3"
   },
   "dependencies": {
+    "@shopify/react-native-skia": "^1.4.2",
     "axios": "^1.7.7",
     "backend": "file:",
     "dotenv": "^16.4.5",

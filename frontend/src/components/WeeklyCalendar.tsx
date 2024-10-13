@@ -1,11 +1,13 @@
 // components/WeeklyCalendar.tsx
 "use client";
 
+import { useUser } from "@auth0/nextjs-auth0/client";
 import interactionPlugin from "@fullcalendar/interaction"; // needed for user interactions
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid"; // for week and day views
 import moment from "moment";
-import { useState } from "react";
+import { getRandomColor } from "~/lib/utils";
+import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -14,6 +16,29 @@ import {
   DialogTitle,
 } from "~/components/ui/dialog";
 import "~/styles/globals.css"; // Import custom CSS
+
+interface UserData {
+  constraints: Constraint[];
+  name: string;
+  subjectRatins: {
+    math: number;
+    science: number;
+    history: number;
+    english: number;
+    art: number;
+    physicalEducation: number;
+    music: number;
+  };
+}
+
+interface Constraint {
+  name: string;
+  days: number[];
+  from: string;
+  to: string;
+  _id?: string;
+  color?: string;
+}
 
 const days = [
   "Sunday",
@@ -25,83 +50,91 @@ const days = [
   "Saturday",
 ];
 
-const constraints = [
-  {
-    name: "sleep",
-    days: [0, 1, 2, 3, 4, 5, 6],
-    from: "22:00",
-    to: "06:00",
-    color: "#3788d8",
-  },
-  {
-    name: "workout",
-    days: [1, 3, 5],
-    from: "07:00",
-    to: "08:30",
-    color: "#28a745",
-  },
-  {
-    name: "study",
-    days: [2, 4],
-    from: "16:00",
-    to: "18:00",
-    color: "#ffc107",
-  },
-];
-
-const generateEvents = () => {
-  const events: {
-    title: string;
-    start: Date;
-    end: Date;
-    backgroundColor: string;
-    borderColor: string;
-    className: string;
-  }[] = [];
-  const currentDate = moment(); // Today’s date
-  days.forEach((day, index) => {
-    constraints.forEach((constraint) => {
-      if (constraint.days.includes(index)) {
-        const startOfWeek = currentDate.clone().startOf("week");
-        const eventStart = startOfWeek
-          .clone()
-          .day(index)
-          .set({
-            hour: parseInt(constraint.from?.split(":")[0] ?? "0"),
-            minute: parseInt(constraint.from?.split(":")[1] ?? "0"),
-          })
-          .toDate();
-        const eventEnd = startOfWeek
-          .clone()
-          .day(index)
-          .set({
-            hour: parseInt(constraint.to?.split(":")[0] ?? "0"),
-            minute: parseInt(constraint.to?.split(":")[1] ?? "0"),
-          })
-          .toDate();
-        events.push({
-          title: constraint.name,
-          start: eventStart,
-          end: eventEnd,
-          backgroundColor: constraint.color,
-          borderColor: constraint.color,
-          className: "custom-event",
-        });
-      }
-    });
-  });
-  return events;
-};
-
-const events = generateEvents();
-
 export default function WeeklyCalendar() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [constraints, setConstraints] = useState<Constraint[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<{
     title: string;
     start: Date;
     end: Date;
   } | null>(null);
+  const { user } = useUser();
+  const userId = user?.sub ? user.sub.split("|")[1] : null;
+
+  useEffect(() => {
+    if (!userId) {
+      console.error("User ID is not available");
+      return;
+    }
+
+    async function getProfile() {
+      const response = await fetch(
+        `http://localhost:4000/api/profile/${userId}`,
+        {
+          method: "GET",
+        },
+      );
+
+      const data = (await response.json()) as UserData;
+
+      // Assign a random color to each constraint if it doesn't have one
+      const updatedConstraints = data.constraints.map((constraint) => ({
+        ...constraint,
+        color: constraint.color ?? getRandomColor(),
+      }));
+
+      setConstraints(updatedConstraints);
+    }
+    getProfile().catch((error) => {
+      console.error("Failed to fetch profile:", error);
+    });
+  }, [user, userId]);
+
+  const generateEvents = () => {
+    const events: {
+      title: string;
+      start: Date;
+      end: Date;
+      backgroundColor: string;
+      borderColor: string;
+      className: string;
+    }[] = [];
+    const currentDate = moment(); // Today’s date
+    days.forEach((day, index) => {
+      constraints.forEach((constraint) => {
+        if (constraint.days.includes(index)) {
+          const startOfWeek = currentDate.clone().startOf("week");
+          const eventStart = startOfWeek
+            .clone()
+            .day(index)
+            .set({
+              hour: parseInt(constraint.from?.split(":")[0] ?? "0"),
+              minute: parseInt(constraint.from?.split(":")[1] ?? "0"),
+            })
+            .toDate();
+          const eventEnd = startOfWeek
+            .clone()
+            .day(index)
+            .set({
+              hour: parseInt(constraint.to?.split(":")[0] ?? "0"),
+              minute: parseInt(constraint.to?.split(":")[1] ?? "0"),
+            })
+            .toDate();
+          events.push({
+            title: constraint.name,
+            start: eventStart,
+            end: eventEnd,
+            backgroundColor: constraint.color ?? "#443fea",
+            borderColor: constraint.color ?? "#ffffff",
+            className: "custom-event",
+          });
+        }
+      });
+    });
+    return events;
+  };
+
+  const events = generateEvents();
 
   const handleEventClick = (clickInfo: {
     event: { title: string; start: Date | null; end: Date | null };
