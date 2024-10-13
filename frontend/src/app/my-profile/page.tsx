@@ -1,15 +1,30 @@
+"use client";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Progress } from "~/components/ui/progress";
-import { getSession } from "@auth0/nextjs-auth0";
+import { useUser } from "@auth0/nextjs-auth0/client";
 import { Spinner } from "~/components/ui/spinner";
+import { useState, useEffect } from "react";
 import Navbar from "~/components/NavBar";
 
-export default async function UserProfile() {
-  const session = await getSession();
-  const user: { name?: string; email?: string; picture?: string } =
-    session?.user ?? {};
-  const userData = {
+type UserData = {
+  name: string | null | undefined;
+  email: string | null | undefined;
+  avatar: string | null | undefined;
+  subjectRatings: {
+    math: number;
+    science: number;
+    history: number;
+    english: number;
+    art: number;
+    physicalEducation: number;
+    music: number;
+  };
+};
+
+export default function UserProfile() {
+  const { user } = useUser();
+  const [userData, setUserData] = useState<UserData>({
     name: user?.name,
     email: user?.email,
     avatar: user?.picture,
@@ -22,7 +37,32 @@ export default async function UserProfile() {
       physicalEducation: 95,
       music: 80,
     },
-  };
+  });
+
+  const userId = user?.sub ? user.sub.split("|")[1] : null;
+  console.log(userId);
+
+  if (!userId) {
+    console.error("User ID is not available");
+    return;
+  }
+
+  useEffect(() => {
+    async function getProfile() {
+      const response = await fetch(
+        `http://localhost:4000/api/profile/${userId}`,
+        {
+          method: "GET",
+        },
+      );
+
+      const data = await response.json();
+
+      setUserData(data);
+      console.log(userData.subjectRatings);
+    }
+    getProfile();
+  }, []);
 
   const capitalizeFirstLetter = (string: string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -55,8 +95,9 @@ export default async function UserProfile() {
                   Subject Ratings
                 </h3>
                 <div className="space-y-4">
-                  {Object.entries(userData.subjectRatings).map(
-                    ([subject, rating]) => (
+                  {Object.entries(userData.subjectRatings)
+                    .slice(0, -1)
+                    .map(([subject, rating]) => (
                       <div key={subject}>
                         <div className="mb-1 flex items-center justify-between">
                           <span className="text-sm font-medium text-gray-700">
@@ -71,8 +112,7 @@ export default async function UserProfile() {
                           className="h-2 bg-primary/60"
                         />
                       </div>
-                    ),
-                  )}
+                    ))}
                 </div>
               </div>
             </CardContent>
