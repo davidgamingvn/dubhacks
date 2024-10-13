@@ -25,7 +25,7 @@ export default function HomePage() {
           </p>
         </div>
         <button
-          className={`${afacad.className} rounded-md border border-black bg-yellow-50 p-5 hover:bg-slate-100`}
+          className={`${afacad.className} rounded-lg border border-black bg-yellow-50 p-4 text-lg hover:bg-slate-100`}
         >
           Log In
         </button>
