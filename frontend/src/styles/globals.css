@@ -27,7 +27,7 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
-    --radius: 0.5rem
+    --radius: 0.5rem;
   }
   .dark {
     --background: 0 0% 3.9%;
@@ -53,7 +53,7 @@
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%
+    --chart-5: 340 75% 55%;
   }
 }
 @layer base {
@@ -63,4 +63,73 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.fc-theme-standard .fc-scrollgrid {
+  border-color: #e5e7eb;
+}
+.fc th {
+  padding: 10px 0;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.fc-timegrid-slot-label {
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+.fc-timegrid-axis {
+  font-weight: bold;
+}
+.fc-toolbar-title {
+  font-size: 1.5rem !important;
+  font-weight: bold;
+  color: #374151;
+}
+.fc-button-primary {
+  background-color: #3b82f6 !important;
+  border-color: #3b82f6 !important;
+  transition: all 0.2s ease-in-out;
+}
+.fc-button-primary:hover {
+  background-color: #2563eb !important;
+  border-color: #2563eb !important;
+}
+.custom-event {
+  transition: all 0.3s ease-in-out;
+  border-radius: 4px;
+  color: black;
+}
+.custom-event:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.custom-scrollbar {
+  overflow-y: hidden; /* Hide scrollbar by default */
+}
+
+.custom-scrollbar:hover {
+  overflow-y: auto; /* Show scrollbar on hover */
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+  margin-top: 10px; /* Add margin to the top */
+  padding-top: 10px; /* Add padding to the top */
+  transition: background 1.3s ease; /* Add transition effect */
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+  transition: background 1.3s ease; /* Add transition effect */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
