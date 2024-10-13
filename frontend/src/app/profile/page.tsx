@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Afacad } from "next/font/google";
 import ConfidenceSlider from "./ConfidenceSlider";
 import { useUser } from "@auth0/nextjs-auth0/client";
-
+import { useRouter } from "next/navigation";
 export const afacad = Afacad({
   subsets: ["latin"],
   weight: ["400", "500"],
@@ -25,7 +25,7 @@ interface Confidences {
   history: number;
   english: number;
   art: number;
-  "Physical Education": number;
+  physicalEducation: number;
   music: number;
 }
 
@@ -33,6 +33,7 @@ export default function ProfileCreator() {
   const [name, setName] = useState("");
   const [miscText, setMiscText] = useState("");
   const { user } = useUser();
+  const router = useRouter();
 
   const [confidences, setConfidences] = useState<Confidences>({
     math: 50,
@@ -40,34 +41,44 @@ export default function ProfileCreator() {
     history: 50,
     english: 50,
     art: 50,
-    "Physical Education": 50,
+    physicalEducation: 50,
     music: 50,
   });
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     console.log(confidences);
-    const data = await fetch(
-      `http://localhost:400/api/profile/create/${user?.sub}`,
-      {
-        method: "POST",
-        body: JSON.stringify({
-          name: name,
-          subjectRatings: confidences,
-          constraints: {
-            name: "Lunch",
-            days: [0, 1, 2, 3, 4, 5, 6],
-            from: "12:00",
-            to: "13:00",
-          },
-        }),
+    const userId = user?.sub ? user.sub.split("|")[1] : null;
+    console.log(userId);
+
+    if (!userId) {
+      console.error("User ID is not available");
+      return;
+    }
+
+    const data = await fetch(`http://localhost:4000/api/profile/${userId}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+      body: JSON.stringify({
+        name: name,
+        subjectRatings: confidences,
+        constraints: {
+          name: "Lunch",
+          days: [0, 1, 2, 3, 4, 5, 6],
+          from: "12:00",
+          to: "13:00",
+        },
+      }),
+    });
     const response = (await data.json()) as {
       success: boolean;
       message: string;
     };
-    console.log(response);
+    if (response.success) {
+      router.replace("/home");
+    }
   }
 
   function handleSliderChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -166,7 +177,7 @@ export default function ProfileCreator() {
                 />
                 <ConfidenceSlider
                   subject="Physical Education"
-                  value={confidences["Physical Education"]}
+                  value={confidences.physicalEducation}
                   change_handler={handleSliderChange}
                 />
                 <ConfidenceSlider
