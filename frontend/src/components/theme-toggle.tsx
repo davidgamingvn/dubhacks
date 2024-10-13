@@ -13,6 +13,7 @@ export default function ThemeToggleButton() {
     <Button
       variant="ghost"
       onClick={() => setTheme(isDarkTheme ? "light" : "dark")}
+      className="flex flex-row items-center w-full justify-start"
     >
       {isDarkTheme ? (
         <>
