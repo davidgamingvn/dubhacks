@@ -37,7 +37,7 @@ const constraints = [
     name: "workout",
     days: [1, 3, 5],
     from: "07:00",
-    to: "08:00",
+    to: "08:30",
     color: "#28a745",
   },
   {

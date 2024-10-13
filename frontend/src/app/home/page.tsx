@@ -5,6 +5,7 @@ import WeeklyCalendar from "~/components/WeeklyCalendar";
 import { Suspense } from "react";
 import { Spinner } from "~/components/ui/spinner";
 
+
 export default async function HomeworkScheduler() {
   const session = await getSession();
   const user = session?.user;
