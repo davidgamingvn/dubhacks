@@ -1,12 +1,12 @@
 // The final solution will include a better spread of time across days to ensure all homeworks are done
 
-type Homework = {
+export type Homework = {
   name: string;
   estimatedCompletion: number; // Time in 30-minute blocks
   deadline: string; // ISO date string
 };
 
-type Constraint = {
+export type Constraint = {
   days: number[]; // Days 0-6 represent Sunday to Saturday
   from: string; // Time in HH:MM format
   to: string; // Time in HH:MM format

@@ -6,7 +6,7 @@ import CustomEmbeddings from "../services/embeddings";
 import HomeworkIndex from "../models/homeworkModel"; // Import the HomeworkIndex model
 import CustomLLM from "../services/llmservices";
 import Profile from "../models/profileModel";
-import { spreadSchedule, ScheduleItem } from "../utils/algo";
+import { spreadSchedule, ScheduleItem, Constraint, Homework } from "../utils/algo";
 import { rotateY } from "@shopify/react-native-skia";
 
 // Extend Request interface to include 'file' property for multer
@@ -53,15 +53,32 @@ router.post(
       // Clean up the uploaded file
       await fs.unlink(req.file.path);
 
-      const constraints = await getProfileConstraintsById(userId);
+      const constraints: Constraint[] = await getProfileConstraintsById(userId);
       console.log(constraints);
+      // const finalschedule: ScheduleItem[] = spreadSchedule();
 
-      const homeworks = await getHomeworks(userId);
+      const llm = new CustomLLM();
+      const predictPrompt = `This is the new homework: ${text}. Please tell me how much time it would take to complete this new homework.
+          Answer only with one number in hours. Here is an example of a valid answer: {answer: 5}
+      `;
+      // const predictTime: number = JSON.parse(await llm.call(predictPrompt)).answer;
+      const predictTime = 10;
+      console.log(predictTime);
 
-      const finalschedule: ScheduleItem[] = spreadSchedule();
+      const newHW = {
+        name: req.file.originalname,
+        estimatedCompletion: predictTime,
+        deadline: deadline
+      };
+
+      const homeworks: Homework[] = await getHomeworks(userId, newHW);
+      
+      console.log(JSON.stringify(homeworks))
+
+       
 
       // Create a prompt using the constraints
-      const prompt = `Here are the constraints for the user: ${JSON.stringify(constraints)}. 
+      const prompt = `Here are the constraints for the user: ${JSON.stringify(constraints)}.
       Here are the homework list for the user: ${JSON.stringify(homeworks)}
       Generate a study schedule in json format based on these constraints, and homework can be split into timezone if needed.
       The return JSON format must look like this:
@@ -82,11 +99,13 @@ router.post(
           "to": "2024-10-13T07:00:00"
         }
       }
-      Only return a json valid object and with no explanation.`;
+      Only return a study schedule in valid json format with no unnessary token.`;
 
       // Use CustomLLM to generate a response
-      const llm = new CustomLLM();
-      const llmResponse = await llm.call(prompt);
+      // const llmresponse = await llm.call(prompt);
+      // console.log(llmresponse)
+
+      const finalschedule: ScheduleItem[] = spreadSchedule(homeworks, constraints);
 
       res.json({finalschedule});
     } catch (error) {
@@ -113,33 +132,29 @@ const getProfileConstraintsById = async (userId: string) => {
   }
 };
 
-const getHomeworks = async (userId: string) => {
+const getHomeworks = async (userId: string, newHW: any) => {
   try {
     // Simulated homeworks in valid JSON format
-    const homeworks = {
-      "Homeworks": [
+    let homeworks = [
         {
-          "title": "mathHomework",
-          "estimatedCompletion": 4,  // 2 hours (30-minute increments)
+          "name": "mathHomework",
+          "estimatedCompletion": 5,  // 2 hours (30-minute increments)
           "deadline": "2024-10-13T00:00:00"
         },
         {
-          "title": "sciencehomework",
-          "estimatedCompletion": 3,  // 1.5 hours (30-minute increments)
+          "name": "sciencehomework",
+          "estimatedCompletion": 7,  // 1.5 hours (30-minute increments)
           "deadline": "2024-10-17T00:00:00"
         },
         {
-          "title": "arthomeowork",
-          "estimatedCompletion": 4,  // 2 hours (30-minute increments)
+          "name": "arthomeowork",
+          "estimatedCompletion": 11,  // 2 hours (30-minute increments)
           "deadline": "2024-10-16T00:00:00"
-        }
-      ]
-    };
+        },
+        newHW
+      ];
 
-    return {
-      userId,
-      homeworks
-    };
+    return homeworks
   } catch (error: any) {
     throw new Error(`Error fetching homeworks: ${error.message}`);
   }
