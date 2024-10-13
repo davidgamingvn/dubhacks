@@ -95,6 +95,11 @@ const finalHomeworksList: Homework[] = [
     estimatedCompletion: 4, // 2 hours (4 x 30-minute blocks)
     deadline: new Date("October 16, 2024").toISOString(),
   },
+  {
+    name: "homework3",
+    estimatedCompletion: 5,
+    deadline: new Date("October 17, 2024").toISOString()
+  }
 ];
 
 // Example constraint
