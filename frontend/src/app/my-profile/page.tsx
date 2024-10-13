@@ -81,7 +81,7 @@ export default function UserProfile() {
             <CardHeader className="bg-[#FAF17C] py-8 text-center">
               <Avatar className="mx-auto mb-4 h-32 w-32 border-4 border-white shadow-lg">
                 <AvatarImage
-                  src={userData.avatar ?? undefined}
+                  src={userData.avatar ?? "/placeholder-avatar.svg"}
                   alt={userData.name ?? undefined}
                 />
                 <AvatarFallback>

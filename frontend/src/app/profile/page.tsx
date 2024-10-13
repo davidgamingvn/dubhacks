@@ -102,12 +102,26 @@ export default function ProfileCreator() {
         body: JSON.stringify({
           name: name,
           subjectRatings: confidences,
-          constraints: {
-            name: "Lunch",
-            days: [0, 1, 2, 3, 4, 5, 6],
-            from: "12:00",
-            to: "13:00",
-          },
+          constraints: [
+            {
+              name: "Lunch",
+              days: [0, 1, 2, 3, 4, 5, 6],
+              from: "12:00",
+              to: "13:00",
+            },
+            {
+              name: "Sleep",
+              days: [0, 1, 2, 3, 4, 5, 6],
+              from: "22:00",
+              to: "06:00",
+            },
+            {
+              name: "Volleyball Practice",
+              days: [2, 4],
+              from: "17:00",
+              to: "19:00",
+            },
+          ],
         }),
       },
     );
