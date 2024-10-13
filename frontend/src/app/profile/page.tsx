@@ -20,7 +20,7 @@ interface Confidences {
   history: number;
   english: number;
   art: number;
-  physicalEducation: number;
+  "Physical Education": number;
   music: number;
 }
 
@@ -37,7 +37,7 @@ export default function ProfileCreator() {
     history: 50,
     english: 50,
     art: 50,
-    physicalEducation: 50,
+    "Physical Education": 50,
     music: 50,
   });
 
