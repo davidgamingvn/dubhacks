@@ -133,3 +133,28 @@
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+.fc-col-header-cell-cushion {
+  color: #1e1e1e;
+}
+
+.fc-button-primary {
+  text-transform: capitalize !important;
+}
+
+.fc-event {
+  text-transform: capitalize !important;
+}
+
+#picture {
+  background-color: #1e1e1e !important;
+  opacity: 90%;
+  cursor: pointer;
+}
+
+#file-upload-button {
+  cursor: pointer;
+}
+
+#picture:hover {
+  opacity: 80%;
+}

@@ -95,9 +95,11 @@ export default function HomeworkScheduler() {
               <Plus className="h-6 w-6" />
             </Button>
           </DialogTrigger>
-          <DialogContent className="border-none bg-[#FAF17C]/80 sm:max-w-[425px]">
+          <DialogContent className="border-none bg-[#FFFFFA] sm:max-w-[425px]">
             <DialogHeader>
-              <DialogTitle className="text-4xl">Add your homework</DialogTitle>
+              <DialogTitle className="text-4xl text-[#1E1E1E]">
+                Add your homework
+              </DialogTitle>
               <DialogDescription>
                 Add your latest homework and its deadline, and we&apos;ll make
                 your schedule!!!
@@ -105,16 +107,20 @@ export default function HomeworkScheduler() {
             </DialogHeader>
             <form onSubmit={handleSubmit}>
               <div className="grid w-full max-w-sm items-center gap-1.5">
-                <Label htmlFor="picture">File</Label>
+                <Label htmlFor="picture" className="text-[#1E1E1E]">
+                  File
+                </Label>
                 <Input
                   id="picture"
                   type="file"
-                  className="bg-white"
+                  className="text-[#1E1E1E]"
                   onChange={handleFileChange}
                   required
                 />
                 <Separator orientation="horizontal" className="mb-4 mt-4" />
-                <Label htmlFor="date">Deadline</Label>
+                <Label htmlFor="date" className="text-[#1E1E1E]">
+                  Deadline
+                </Label>
                 <DatePicker
                   selected={date}
                   onSelect={(date) => setDate(date ?? null)}
