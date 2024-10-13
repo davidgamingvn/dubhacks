@@ -1,10 +1,12 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Afacad } from "next/font/google";
 import ConfidenceSlider from "./ConfidenceSlider";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { useRouter } from "next/navigation";
 import { Coffee } from "lucide-react";
+import { useToast } from "~/hooks/use-toast";
+
 export const afacad = Afacad({
   subsets: ["latin"],
   weight: ["400", "500"],
@@ -32,7 +34,9 @@ interface Confidences {
 
 export default function ProfileCreator() {
   const [name, setName] = useState("");
+  const [profile, setProfile] = useState(null);
   const [miscText, setMiscText] = useState("");
+  const { toast } = useToast();
   const { user } = useUser();
   const router = useRouter();
 
@@ -46,39 +50,83 @@ export default function ProfileCreator() {
     music: 50,
   });
 
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    console.log(confidences);
+  useEffect(() => {
     const userId = user?.sub ? user.sub.split("|")[1] : null;
-    console.log(userId);
 
     if (!userId) {
       console.error("User ID is not available");
       return;
     }
 
-    const data = await fetch(`http://localhost:4000/api/profile/${userId}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name: name,
-        subjectRatings: confidences,
-        constraints: {
-          name: "Lunch",
-          days: [0, 1, 2, 3, 4, 5, 6],
-          from: "12:00",
-          to: "13:00",
+    const fetchProfile = async () => {
+      const response = await fetch(
+        `http://localhost:4000/api/profile/${userId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
         },
-      }),
-    });
-    const response = (await data.json()) as {
-      success: boolean;
-      message: string;
+      );
+      if (response.status === 200) {
+        toast({
+          title: "Profile Exists",
+          description:
+            "Your profile is already created. Redirecting to homepage",
+          duration: 1000,
+        });
+        router.push("/home");
+      }
+
+      if (response.status === 404) {
+        toast({
+          title: "Profile Not Found",
+          description: "Please create your profile",
+          duration: 1000,
+        });
+      }
     };
-    if (response.success) {
-      router.replace("/home");
+    fetchProfile().catch((error) => {
+      console.error("Error fetching profile:", error);
+    });
+  }, [user]);
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const userId = user?.sub ? user.sub.split("|")[1] : null;
+
+    if (!userId) {
+      console.error("User ID is not available");
+      return;
+    }
+
+    const response = await fetch(
+      `http://localhost:4000/api/profile/${userId}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: name,
+          subjectRatings: confidences,
+          constraints: {
+            name: "Lunch",
+            days: [0, 1, 2, 3, 4, 5, 6],
+            from: "12:00",
+            to: "13:00",
+          },
+        }),
+      },
+    );
+    if (response.status === 201) {
+      router.push("/home");
+    } else {
+      const data = (await response.json()) as {
+        message: string;
+        error?: string;
+      };
+      console.log(data);
     }
   }
 

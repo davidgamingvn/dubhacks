@@ -1,8 +1,8 @@
 "use client";
 import { useUser } from "@auth0/nextjs-auth0/client";
-import { LogOut, User, Home } from "lucide-react";
-import ThemeToggleButton from "./theme-toggle";
-import { useTheme } from "next-themes";
+import { Home, LogOut, User } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
 import {
@@ -12,14 +12,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
+import ThemeToggleButton from "./theme-toggle";
 import { Spinner } from "./ui/spinner";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 
 export default function Navbar() {
-  const { theme, setTheme } = useTheme();
-  const isDarkTheme = theme === "dark";
-
   const { user } = useUser();
 
   const currentRoute = usePathname();
@@ -53,9 +49,10 @@ export default function Navbar() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem asChild>
+                  <DropdownMenuItem>
                     <Link
                       href={currentRoute === "/home" ? "/my-profile" : "/home"}
+                      className="ml-2 flex w-full flex-row items-center justify-start"
                     >
                       {currentRoute === "/home" ? (
                         <>
@@ -76,7 +73,7 @@ export default function Navbar() {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem className="border-none focus:bg-red-400">
                     <Link
-                      className="flex flex-row items-center justify-center"
+                      className="ml-2 flex w-full flex-row items-center justify-start"
                       href="api/auth/logout"
                     >
                       <LogOut className="mr-2 h-4 w-4" />
