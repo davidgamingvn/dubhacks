@@ -3,6 +3,7 @@ import dotenv from 'dotenv'
 
 //routes
 import profileRoutes from './routes/profileRoutes';
+import uploadHomeworkRoute from './routes/uploadHomeworkRoute'
 
 const app = express();
 
@@ -12,6 +13,7 @@ dotenv.config();
 app.use(express.json());
 
 app.use('/api', profileRoutes);
+app.use('/api', uploadHomeworkRoute);
 
 // Basic route
 app.get('/', (req, res) => {
