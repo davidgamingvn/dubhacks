@@ -12,15 +12,16 @@ export const afacad = Afacad({
 export default function HomePage() {
   return (
     <main className="flex h-[100vh] w-[100vw] flex-row">
-      <section className="flex h-full w-1/2 flex-col justify-between bg-[#FAF17C] px-[4em] py-[4em] text-[#1E]">
+      <section className="flex h-full w-1/2 flex-col justify-between border bg-[#FAF17C] px-[4em] py-[4em] text-[#1E1E1E]">
         <div role="presentation">
           <h1
-            className={`mb-10 size-28 text-8xl font-semibold ${afacad.className}`}
+            className={`mb-8 size-28 text-8xl font-semibold ${afacad.className}`}
           >
             Scheduler
           </h1>
-          <p className={`text-lg ${afacad.className}`}>
-            The AI scheduler to take one thing off your mind
+          <p className={`text-xl ${afacad.className} leading-relaxed`}>
+            The AI assisted homework scheduler to help you better manage time
+            and resources with your homework and assignments.
           </p>
         </div>
         <button
