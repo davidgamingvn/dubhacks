@@ -25,6 +25,7 @@ export default function HomeworkScheduler() {
   const [file, setFile] = useState<File | null>(null);
   const [date, setDate] = useState<Date | null>(null);
   const { user } = useUser();
+  const userId = user?.sub ? user.sub.split("|")[1] : null;
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
@@ -52,7 +53,7 @@ export default function HomeworkScheduler() {
 
     try {
       const response = await fetch(
-        `http://localhost:4000/api/uploadhomework/${user?.sub}`,
+        `http://localhost:4000/api/uploadhomework/${userId}`,
         {
           method: "POST",
           body: formData,
