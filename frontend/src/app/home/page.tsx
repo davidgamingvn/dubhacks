@@ -1,7 +1,8 @@
 "use client";
 
+import { useUser } from "@auth0/nextjs-auth0/client";
 import { Plus } from "lucide-react";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useState } from "react";
 import Navbar from "~/components/NavBar";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader } from "~/components/ui/card";
@@ -20,11 +21,21 @@ import { Label } from "~/components/ui/label";
 import { Separator } from "~/components/ui/separator";
 import { Spinner } from "~/components/ui/spinner";
 import WeeklyCalendar from "~/components/WeeklyCalendar";
-import { useUser } from "@auth0/nextjs-auth0/client";
+import { useToast } from "~/hooks/use-toast";
+
+interface Event {
+  name: string;
+  from: string;
+  to: string;
+}
+
 export default function HomeworkScheduler() {
   const [file, setFile] = useState<File | null>(null);
   const [date, setDate] = useState<Date | null>(null);
+  const [additionalEvents, setAdditionalEvents] = useState<Event[]>([]);
+  const [isLoading, setIsLoading] = useState(false); // Loading state
   const { user } = useUser();
+  const { toast } = useToast();
   const userId = user?.sub ? user.sub.split("|")[1] : null;
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,6 +49,7 @@ export default function HomeworkScheduler() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setIsLoading(true); // Set loading state to true
 
     const formData = new FormData();
     if (file) {
@@ -64,10 +76,25 @@ export default function HomeworkScheduler() {
         throw new Error("Failed to submit homework");
       }
 
-      alert("Homework submitted successfully!");
+      const newEvents = (await response.json()) as Event[];
+      setAdditionalEvents((prevEvents) => [...prevEvents, ...newEvents]);
+
+      toast({
+        title: "Homework submitted successfully",
+        description: "Your profile is already created. Redirecting to homepage",
+        duration: 3000,
+      });
     } catch (error) {
       console.error("Error submitting homework:", error);
+      toast({
+        variant: "destructive",
+        title: `${error instanceof Error ? error.message : String(error)}`,
+        description: "Homework submitted unsuccessfully, ",
+        duration: 3000,
+      });
       alert("Error submitting homework");
+    } finally {
+      setIsLoading(false); // Set loading state to false
     }
   };
 
@@ -89,7 +116,7 @@ export default function HomeworkScheduler() {
           </CardHeader>
           <CardContent>
             <Suspense fallback={<Spinner />}>
-              <WeeklyCalendar />
+              <WeeklyCalendar additionalEvents={additionalEvents} />
             </Suspense>
           </CardContent>
         </Card>
@@ -134,7 +161,9 @@ export default function HomeworkScheduler() {
                 />
               </div>
               <DialogFooter>
-                <Button type="submit">Save changes</Button>
+                <Button type="submit" disabled={isLoading}>
+                  {isLoading ? <Spinner size="medium" /> : "Save changes"}
+                </Button>
               </DialogFooter>
             </form>
           </DialogContent>

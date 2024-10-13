@@ -6,7 +6,6 @@ import interactionPlugin from "@fullcalendar/interaction"; // needed for user in
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid"; // for week and day views
 import moment from "moment";
-import { getRandomColor } from "~/lib/utils";
 import { useEffect, useState } from "react";
 import {
   Dialog,
@@ -15,12 +14,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "~/components/ui/dialog";
+import { getRandomColor } from "~/lib/utils";
 import "~/styles/globals.css"; // Import custom CSS
 
 interface UserData {
   constraints: Constraint[];
   name: string;
-  subjectRatins: {
+  subjectRatings: {
     math: number;
     science: number;
     history: number;
@@ -40,6 +40,12 @@ interface Constraint {
   color?: string;
 }
 
+interface Event {
+  name: string;
+  from: string;
+  to: string;
+}
+
 const days = [
   "Sunday",
   "Monday",
@@ -50,7 +56,11 @@ const days = [
   "Saturday",
 ];
 
-export default function WeeklyCalendar() {
+interface WeeklyCalendarProps {
+  additionalEvents: Event[];
+}
+
+export default function WeeklyCalendar({ additionalEvents }: WeeklyCalendarProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [constraints, setConstraints] = useState<Constraint[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<{
@@ -131,6 +141,19 @@ export default function WeeklyCalendar() {
         }
       });
     });
+
+    // Add additional events
+    additionalEvents.forEach((event) => {
+      events.push({
+        title: event.name,
+        start: new Date(event.from),
+        end: new Date(event.to),
+        backgroundColor: getRandomColor(),
+        borderColor: "#ffffff",
+        className: "custom-event",
+      });
+    });
+
     return events;
   };
 
